@@ -18,7 +18,7 @@ public class ElasticsearchController {
     @GetMapping("addAllIndex")
     public Object addAllIndex(){
 
-        Object indexs = provideService.addIndexs(AdEntity.class);
+        Object indexs = provideService.addIndexs(AdEntity.class.getSimpleName());
 
         return indexs;
 

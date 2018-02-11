@@ -24,11 +24,11 @@ public interface ProvideService {
 
     /**
      * 按照类，更新，或者增加数据库中全部索引
-     * @param clazz
+     * @param type
      * @return
      */
     @PostMapping("elasticsearch/addIndexs")
-    public Object addIndexs(@RequestParam("clazz") Class clazz);
+    public Object addIndexs(@RequestParam("type") String type);
 
     /**
      * 按照指定条件，查询索引中数据

@@ -144,7 +144,7 @@ public class ElasticSearchController {
 
     })
     @PostMapping("addIndexs")
-    public Object addIndex(@RequestParam("clazz") Class clazz) {
+    public Object addIndex(@RequestParam("type") String type) {
 
         SearchResponseVO searchResponseVO = new SearchResponseVO();
         RestHighLevelClient client = null;
@@ -153,7 +153,7 @@ public class ElasticSearchController {
 
             client = ElasticsearchConnentFactroy.getClient();
 
-            String type = clazz.getSimpleName();
+//            String type = clazz.getSimpleName();
 
             BulkRequest bulkRequest = new BulkRequest();
             if (type.equals("AdEntity")){

@@ -69,6 +69,9 @@ public class ElasticSearchController {
     @Autowired
     CommonUtils commonUtils;
 
+    @Autowired
+    AdService adService;
+
 
 
     /**
@@ -140,7 +143,7 @@ public class ElasticSearchController {
 
     @ApiOperation(value = "批量增加索引,",notes = "批量增加索引")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "clazz",value = "增加索引的类对象",required = true,dataType = "Class")
+            @ApiImplicitParam(name = "type",value = "增加索引的类对象",required = true,dataType = "String",paramType = "query")
 
     })
     @PostMapping("addIndexs")
@@ -156,9 +159,13 @@ public class ElasticSearchController {
 //            String type = clazz.getSimpleName();
 
             BulkRequest bulkRequest = new BulkRequest();
+
+            Integer size = 0;
+
             if (type.equals("AdEntity")){
-                AdService adService = new AdServiceImpl();
+
                 List<AdEntity> all = adService.findAll();
+                size = all.size();
 
                 for (AdEntity ad: all
                      ) {
@@ -173,25 +180,32 @@ public class ElasticSearchController {
 
                 }
             }
-            BulkResponse bulkResponse = client.bulk(bulkRequest);
+            if (size.intValue()==0){//如果查询出来数据为0，那么就不需要发送请求啦
 
-            int create = 0;
-            int update = 0;
+                commonUtils.putValue2Result(searchResponseVO, MySearchResult.BATCH_OP_0,null);
 
-            for (BulkItemResponse bulkItemResponse : bulkResponse
-                    ) {
-                if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.INDEX ||
-                        bulkItemResponse.getOpType() == DocWriteRequest.OpType.CREATE) {
-                    logger.info("创建成功");
-                    create++;
-                } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.UPDATE) {
-                    logger.info("更新成功");
-                    update++;
+            }else {
+                BulkResponse bulkResponse = client.bulk(bulkRequest);
+
+                int create = 0;
+                int update = 0;
+
+                for (BulkItemResponse bulkItemResponse : bulkResponse
+                        ) {
+                    if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.INDEX ||
+                            bulkItemResponse.getOpType() == DocWriteRequest.OpType.CREATE) {
+                        logger.info("创建成功");
+                        create++;
+                    } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.UPDATE) {
+                        logger.info("更新成功");
+                        update++;
+                    }
                 }
-            }
-            commonUtils.putValue2Result(searchResponseVO, MySearchResult.BATCH_OP,null);
+                commonUtils.putValue2Result(searchResponseVO, MySearchResult.BATCH_OP,null);
 //            result.put("create_num", create);
 //            result.put("update_num", update);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             commonUtils.putValue2Result(searchResponseVO, MySearchResult.ERROR,null);

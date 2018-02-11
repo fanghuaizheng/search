@@ -17,6 +17,7 @@ public class AdServiceImpl implements AdService {
     @Autowired
     AdDao adDao;
 
+
     @Override
     public List<AdEntity> findAll() {
         return adDao.findAll();

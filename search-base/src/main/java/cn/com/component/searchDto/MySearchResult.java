@@ -9,6 +9,7 @@ public enum  MySearchResult {
     CREATE(201,"创建成功"),
     UPDATE(202,"更新成功"),
     BATCH_OP(203,"批操作成功"),
+    BATCH_OP_0(204,"操作成功，共更新0条数据"),
     PARAM_IS_NULL(400,"传入的参数为空，请检查，field与value"),
 
     ERROR(500,"发生错误");

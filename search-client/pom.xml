@@ -106,11 +106,11 @@
 		<!--elasticsearch end-->
 
 		<!--普通的依赖 start-->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.44</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.alibaba</groupId>-->
+			<!--<artifactId>fastjson</artifactId>-->
+			<!--<version>1.2.44</version>-->
+		<!--</dependency>-->
 
 		<!--引入资源池 start-->
 		<dependency>

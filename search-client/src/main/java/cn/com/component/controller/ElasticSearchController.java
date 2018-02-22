@@ -8,8 +8,10 @@ import cn.com.component.searchDto.MySearchResult;
 import cn.com.component.searchDto.SearchResponseVO;
 import cn.com.component.searchDto.SearchResquestVO;
 import cn.com.component.service.AdService;
+import cn.com.component.service.BaseService;
 import cn.com.component.service.impl.AdServiceImpl;
 import cn.com.component.utils.CommonUtils;
+import cn.com.component.utils.EntityMapService;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -70,7 +72,11 @@ public class ElasticSearchController {
     CommonUtils commonUtils;
 
     @Autowired
-    AdService adService;
+    EntityMapService entityMapService;
+
+//    @Autowired
+//    AdService adService;
+
 
 
 
@@ -143,7 +149,7 @@ public class ElasticSearchController {
 
     @ApiOperation(value = "批量增加索引,",notes = "批量增加索引")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "type",value = "增加索引的类对象",required = true,dataType = "String",paramType = "query")
+            @ApiImplicitParam(name = "type",value = "增加索引的类型",required = true,dataType = "String",paramType = "query")
 
     })
     @PostMapping("addIndexs")
@@ -161,14 +167,17 @@ public class ElasticSearchController {
             BulkRequest bulkRequest = new BulkRequest();
 
             Integer size = 0;
+            entityMapService.setMap();
+            Map<String,BaseService> map =  entityMapService.getMap();
 
-            if (type.equals("AdEntity")){
 
-                List<AdEntity> all = adService.findAll();
+            BaseService baseService = map.get(type);
+            if (baseService!=null){
+                List<AdEntity> all = baseService.findAll();
                 size = all.size();
 
                 for (AdEntity ad: all
-                     ) {
+                        ) {
                     String data = JSONObject.toJSONString(ad);
                     if (ad.getId()!=null){
                         bulkRequest.add(new IndexRequest(config.index, type,ad.getId().toString()).source(data,
@@ -179,7 +188,9 @@ public class ElasticSearchController {
                     }
 
                 }
+
             }
+
             if (size.intValue()==0){//如果查询出来数据为0，那么就不需要发送请求啦
 
                 commonUtils.putValue2Result(searchResponseVO, MySearchResult.BATCH_OP_0,null);
@@ -216,7 +227,6 @@ public class ElasticSearchController {
 
 
     }
-
 
     /**
      * 搜索的总入口

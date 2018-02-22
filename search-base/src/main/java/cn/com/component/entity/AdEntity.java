@@ -1,7 +1,10 @@
 package cn.com.component.entity;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,8 +16,8 @@ public class AdEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @JsonIgnore
-    public Integer id;
+    @JSONField(serialize = false)
+    private Integer id;
 
     @Column(name = "name",length = 100)
     private String name;

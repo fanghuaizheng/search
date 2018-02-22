@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Created by hzfang on 2018/2/11.
+ * 这里是提供者提供的服务
  */
 @FeignClient("search-client")
 public interface ProvideService {
@@ -29,6 +30,7 @@ public interface ProvideService {
      */
     @PostMapping("elasticsearch/addIndexs")
     public Object addIndexs(@RequestParam("type") String type);
+
 
     /**
      * 按照指定条件，查询索引中数据

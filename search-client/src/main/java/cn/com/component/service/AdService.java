@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * Created by hzfang on 2018/2/11.
  */
-public interface AdService {
+public interface AdService extends BaseService<AdEntity> {
 
-    List<AdEntity> findAll();
+
 
 }

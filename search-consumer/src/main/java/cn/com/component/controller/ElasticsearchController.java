@@ -2,6 +2,7 @@ package cn.com.component.controller;
 
 import cn.com.component.entity.AdEntity;
 import cn.com.component.provide.ProvideService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,8 @@ public class ElasticsearchController {
         return indexs;
 
     }
+
+
 
 
 

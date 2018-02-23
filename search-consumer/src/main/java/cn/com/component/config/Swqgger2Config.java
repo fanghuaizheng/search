@@ -25,7 +25,7 @@ public class Swqgger2Config {
     }
 
     private ApiInfo apiInfo(){
-        return new ApiInfoBuilder().title("客户端的接口文件")
+        return new ApiInfoBuilder().title("消费者的接口文件")
                 .description("接口描述")
                 .termsOfServiceUrl("http://blog.csdn.net/saytime")
                 .version("1.0")

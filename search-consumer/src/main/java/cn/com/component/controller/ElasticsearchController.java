@@ -21,10 +21,16 @@ public class ElasticsearchController {
     @Autowired
     ProvideService provideService;
 
+    @ApiOperation(value = "更新或者插入指定类型的数据",notes = "更新或者插入指定类型的数据")
+    @ApiImplicitParam(name = "type",value = "指定的数据类型",required = true,paramType = "query",dataType = "String")
     @GetMapping("addAllIndex")
-    public Object addAllIndex(){
+    public Object addAllIndex(@RequestParam(value = "type",required = true,defaultValue = "")String type){
 
-        Object indexs = provideService.addIndexs(AdEntity.class.getSimpleName());
+        if (type==null){
+            return "参数不能为空";
+        }
+
+        Object indexs = provideService.addIndexs(type);
 
         return indexs;
 

@@ -4,12 +4,14 @@ package cn.com.component.controller;
 import cn.com.component.config.Config;
 import cn.com.component.elasticsearch.ElasticsearchConnentFactroy;
 import cn.com.component.entity.AdEntity;
+import cn.com.component.entity.BaseEntity;
 import cn.com.component.searchDto.MySearchResult;
 import cn.com.component.searchDto.SearchResponseVO;
 import cn.com.component.searchDto.SearchResquestVO;
 import cn.com.component.service.AdService;
 import cn.com.component.service.BaseService;
 import cn.com.component.service.impl.AdServiceImpl;
+import cn.com.component.utils.BeanUtils;
 import cn.com.component.utils.CommonUtils;
 import cn.com.component.utils.EntityMapService;
 import com.alibaba.fastjson.JSONObject;
@@ -76,6 +78,9 @@ public class ElasticSearchController {
 
 //    @Autowired
 //    AdService adService;
+
+    @Autowired
+    BeanUtils beanUtils;
 
 
 
@@ -162,25 +167,20 @@ public class ElasticSearchController {
 
             client = ElasticsearchConnentFactroy.getClient();
 
-//            String type = clazz.getSimpleName();
-
             BulkRequest bulkRequest = new BulkRequest();
 
             Integer size = 0;
-            entityMapService.setMap();
-            Map<String,BaseService> map =  entityMapService.getMap();
 
+            BaseService baseService =  beanUtils.getService(type);
 
-            BaseService baseService = map.get(type);
             if (baseService!=null){
-                List<AdEntity> all = baseService.findAll();
+                List<BaseEntity> all = baseService.findAll();
                 size = all.size();
-
-                for (AdEntity ad: all
+                for (BaseEntity entity: all
                         ) {
-                    String data = JSONObject.toJSONString(ad);
-                    if (ad.getId()!=null){
-                        bulkRequest.add(new IndexRequest(config.index, type,ad.getId().toString()).source(data,
+                    String data = JSONObject.toJSONString(entity);
+                    if (entity.getId()!=null){
+                        bulkRequest.add(new IndexRequest(config.index, type,entity.getId().toString()).source(data,
                                 XContentType.JSON));
                     }else {
                         bulkRequest.add(new IndexRequest(config.index, type).source(data,

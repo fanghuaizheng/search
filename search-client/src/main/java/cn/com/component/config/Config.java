@@ -29,4 +29,8 @@ public class Config {
     @Value("${security.user.password}")
     public String password;
 
+    //service包所在目录
+    @Value("${package.service.path}")
+    public String servicePath;
+
 }

@@ -4,7 +4,6 @@ package cn.com.component.entity;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,12 +11,9 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "t_ad")
-public class AdEntity {
+public class AdEntity extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JSONField(serialize = false)
-    private Integer id;
+
 
     @Column(name = "name",length = 100)
     private String name;
@@ -67,13 +63,7 @@ public class AdEntity {
     @Column(name = "createtime")
     private Date createtime;
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

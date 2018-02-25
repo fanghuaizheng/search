@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class SearchRequestVO {
 
 
-    @ApiModelProperty(name = "from",value = "分页开始标识",required = false,example = "10",dataType = "Integer")
+    @ApiModelProperty(name = "from",value = "分页开始标识",required = false,example = "0",dataType = "Integer")
     private Integer from;//开始条数
 
     @ApiModelProperty(name = "size",value = "查询跨度",required = false,example = "10",dataType = "Integer")

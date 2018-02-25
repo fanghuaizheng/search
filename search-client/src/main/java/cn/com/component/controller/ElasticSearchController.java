@@ -7,7 +7,7 @@ import cn.com.component.entity.AdEntity;
 import cn.com.component.entity.BaseEntity;
 import cn.com.component.searchDto.MySearchResult;
 import cn.com.component.searchDto.SearchResponseVO;
-import cn.com.component.searchDto.SearchResquestVO;
+import cn.com.component.searchDto.SearchRequestVO;
 import cn.com.component.service.AdService;
 import cn.com.component.service.BaseService;
 import cn.com.component.service.impl.AdServiceImpl;
@@ -240,14 +240,14 @@ public class ElasticSearchController {
 
 
         SearchResponseVO searchResponseVO = new SearchResponseVO();
-        SearchResquestVO searchResquestVO = JSONObject.parseObject(vo, SearchResquestVO.class);
+        SearchRequestVO SearchRequestVO = JSONObject.parseObject(vo, SearchRequestVO.class);
 
 
 
         ArrayList<Object> data = new ArrayList<>();
 
         //先判断参数是否有为空的
-        if (searchResquestVO.getField()==null||searchResquestVO.getValue()==null){
+        if (SearchRequestVO.getField()==null||SearchRequestVO.getValue()==null){
 
             MySearchResult isNull = MySearchResult.PARAM_IS_NULL;
 
@@ -265,7 +265,7 @@ public class ElasticSearchController {
             SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
             MatchQueryBuilder matchQuery = QueryBuilders.
-                    matchQuery(searchResquestVO.getField(), searchResquestVO.getValue());
+                    matchQuery(SearchRequestVO.getField(), SearchRequestVO.getValue());
             matchQuery.fuzziness(Fuzziness.AUTO);
             BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
             boolQuery.must(matchQuery);
@@ -273,7 +273,7 @@ public class ElasticSearchController {
             //设置高亮
             HighlightBuilder highlightBuilder = new HighlightBuilder();
 
-            HighlightBuilder.Field highField = new HighlightBuilder.Field(searchResquestVO.getField());
+            HighlightBuilder.Field highField = new HighlightBuilder.Field(SearchRequestVO.getField());
             highlightBuilder.field(highField);
 
             sourceBuilder.query(boolQuery);
@@ -281,26 +281,26 @@ public class ElasticSearchController {
             sourceBuilder.highlighter(highlightBuilder);
 
             //设置分页
-            if (searchResquestVO.getFrom() != null && searchResquestVO.getFrom().intValue() >= 0) {
-                sourceBuilder.from(searchResquestVO.getFrom());
+            if (SearchRequestVO.getFrom() != null && SearchRequestVO.getFrom().intValue() >= 0) {
+                sourceBuilder.from(SearchRequestVO.getFrom());
             }
-            if (searchResquestVO.getSize() != null && searchResquestVO.getSize().intValue() > 0) {
-                sourceBuilder.size(searchResquestVO.getSize());
+            if (SearchRequestVO.getSize() != null && SearchRequestVO.getSize().intValue() > 0) {
+                sourceBuilder.size(SearchRequestVO.getSize());
             }
 
             //设置排序
-            if (searchResquestVO.getSortField() != null) {
-                if (searchResquestVO.getSort() != null && searchResquestVO.getSort()) {//按照升序排序
-                    sourceBuilder.sort(new FieldSortBuilder(searchResquestVO.getSortField()).order(SortOrder.ASC));
+            if (SearchRequestVO.getSortField() != null) {
+                if (SearchRequestVO.getSort() != null && SearchRequestVO.getSort()) {//按照升序排序
+                    sourceBuilder.sort(new FieldSortBuilder(SearchRequestVO.getSortField()).order(SortOrder.ASC));
 
                 } else {//默认排序字段降序
-                    sourceBuilder.sort(new FieldSortBuilder(searchResquestVO.getSortField()).order(SortOrder.DESC));
+                    sourceBuilder.sort(new FieldSortBuilder(SearchRequestVO.getSortField()).order(SortOrder.DESC));
                 }
             }
 
 
             SearchRequest searchRequest = new SearchRequest(config.index);
-            searchRequest.types(searchResquestVO.getType());
+            searchRequest.types(SearchRequestVO.getType());
 
 
             searchRequest.source(sourceBuilder);
@@ -317,13 +317,13 @@ public class ElasticSearchController {
             for (SearchHit hit : searchHits
                     ) {
                 Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-                Class responseClazz = searchResquestVO.getResponseClazz();
+                Class responseClazz = SearchRequestVO.getResponseClazz();
                 //如果没有传入返回的类类型，那么用父类，OBject
                 if (responseClazz==null){
                     responseClazz = Object.class;
                 }
                 Map<String, HighlightField> highlightFields = hit.getHighlightFields();
-                HighlightField highlightField = highlightFields.get(searchResquestVO.getField());
+                HighlightField highlightField = highlightFields.get(SearchRequestVO.getField());
                 Text[] texts = highlightField.fragments();
                 String string = texts[0].string();
                 String[] highLight = new String[]{string};
